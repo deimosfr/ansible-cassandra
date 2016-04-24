@@ -1,0 +1,9 @@
+---
+
+- name: restart cassandra
+  service:
+    name: cassandra
+    enabled: true
+    state: started
+  when: cassandra_manage_service
+

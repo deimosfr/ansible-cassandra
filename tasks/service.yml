@@ -1,0 +1,8 @@
+---
+
+- name: Ensure service is started
+  service:
+    name: cassandra
+    enabled: true
+    state: started
+  when: cassandra_manage_service

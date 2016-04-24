@@ -1,0 +1,15 @@
+galaxy_info:
+  author: Pierre Mavro
+  description: Cassandra role
+  company:
+  license: GPLv3
+  min_ansible_version: 2.0
+  platforms:
+    - name: Debian
+      versions:
+        - jessie
+  galaxy_tags:
+    - databases
+    - databases-nosql
+    - cassandra
+dependencies: []

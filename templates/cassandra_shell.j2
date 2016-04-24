@@ -1,0 +1,5 @@
+{% if item.dict %}
+{% for k,v in item.dict.iteritems() %}
+{{k}}={{v}}
+{% endfor %}
+{% endif %}

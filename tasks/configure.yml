@@ -1,0 +1,45 @@
+---
+
+- name: set Cassandra limits
+  pam_limits:
+    domain: 'cassandra'
+    limit_item: '{{item.key}}'
+    value: '{{item.value}}'
+    limit_type: '-'
+    dest: '/etc/security/limits.d/cassandra.conf'
+    backup: yes
+  with_dict: '{{cassandra_limits}}'
+  notify: restart cassandra
+  when: cassandra_manage_limits
+
+- name: set Cassandra sysctl
+  sysctl:
+    name: '{{item.key}}'
+    value: '{{item.value}}'
+    sysctl_file: '/etc/sysctl.d/50-cassandra.conf'
+    sysctl_set: yes
+    reload: yes
+    state: present
+  with_dict: '{{cassandra_sysctl}}'
+  notify: restart cassandra
+  when: cassandra_manage_sysctl
+  # Ignoring errors for containers (read only sysctl)
+  ignore_errors: yes
+
+- name: set Cassandra configuration files
+  template:
+    src: '{{item.src}}'
+    dest: '{{item.dest}}'
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify: restart cassandra
+  with_items:
+    - { src: 'cassandra.yml.j2', dest: '/etc/cassandra/cassandra.yml' }
+    - { src: 'cassandra_shell.j2', dest: '/etc/default/cassandra', dict: '{{cassandra_server_defaults}}' }
+    - { src: 'cassandra_shell.j2', dest: '/etc/cassandra/cassandra-rackdc.properties', dict: '{{cassandra_rack_dc}}' }
+    - { src: 'cassandra_shell.j2', dest: '/etc/cassandra/cassandra-topology.properties', dict: '{{cassandra_topology_properties}}' }
+    - { src: 'cassandra_list.j2', dest: '/etc/cassandra/jvm.options', list: '{{cassandra_kvm_options}}'}
+    - { src: 'logback-tools.xml.j2', dest: '/etc/cassandra/logback-tools.xml' }
+    - { src: 'logback.xml.j2', dest: '/etc/cassandra/logback.xml' }

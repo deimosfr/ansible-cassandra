@@ -1,0 +1,10 @@
+---
+
+- include: install-debian.yml
+  tags: [cassandra, cassandra-install]
+
+- include: configure.yml
+  tags: [cassandra, cassandra-config]
+
+- include: service.yml
+  tags: [cassandra, cassandra-service]
